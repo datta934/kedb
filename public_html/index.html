@@ -14,34 +14,6 @@ and open the template in the editor.
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
         <script src="js/materialize.min.js"></script>
         <script type="text/javascript">
-            var TagCount;
-            var a = 1;
-//comment added by MD
-//comment added by sourabh
-            var test= $.ajax({
-                "async": true,
-                "crossDomain": true,
-                "url": "http://localhost:7474/db/data/cypher",
-                "method": "POST",
-                "headers": {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic bmVvNGo6YWRtaW4=",
-                    "Cache-Control": "no-cache",
-                    "Postman-Token": "c2b26f6b-a88f-8d15-462e-fee0ffbb5822"
-                },
-                "processData": false,
-                "data": "{\"query\" : \"match (n:TAGS) return n.name as name\"}"
-            }).done(function (response) {
-
-                a = 2;
-                TagCount = response.data.toString().split(",");
-                for (var i = 0; i < TagCount.length; i++) {
-                    $("#filter1").append('<div class="tag-column"><input type="checkbox" id="tag' + TagCount[i] + '"/><label for="tag' + TagCount[i] + '">' + TagCount[i] + '</label></div>')
-                }
-//                console.log(TagCount);
-                return response;
-            });
-            console.log(test);
             $(document).ready(function () {
                 $('#view-question').modal();
                 $('#new-question').modal();
@@ -112,6 +84,10 @@ and open the template in the editor.
                     <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
                 </div>
             </div>
+            
+            
+            
+            
             <div id="fornew-answermodal" class="modal modal-fixed-footer">
                 <div class="modal-content">
                     <h5>Answer the question</h5>
@@ -190,7 +166,7 @@ and open the template in the editor.
                             </div>
                             <div class="input-field col s12">
                                 <label for="tags-onlyq">Tags</label>
-                                <div class="chips chips-autocomplete" id="tags-onlyq"></div>
+                                <div class="chips chips-autocomplete" id="tags-only"></div>
                             </div>
 
                         </div>
@@ -214,18 +190,83 @@ and open the template in the editor.
 
         </div>
         <script>
+            var TagCount = $.ajax({
+                "async": false,
+                "crossDomain": true,
+                "url": "http://localhost:7474/db/data/cypher",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic bmVvNGo6YWRtaW4=",
+                    "Cache-Control": "no-cache",
+                    "Postman-Token": "c2b26f6b-a88f-8d15-462e-fee0ffbb5822"
+                },
+                "processData": false,
+                "data": "{\"query\" : \"match (n:TAGS) return n.name as name\"}"
+            }).done();
+            console.log(TagCount.responseJSON.data.toString().split(","));
+            TagCount = TagCount.responseJSON.data.toString().split(",");
+            for (var i = 0; i < TagCount.length; i++) {
+                $("#filter1").append('<div class="tag-column"><input type="checkbox" id="tag' + TagCount[i] + '"/><label for="tag' + TagCount[i] + '">' + TagCount[i] + '</label></div>')
+            }
+            var ProblemCount = $.ajax({
+                "async": false,
+                "crossDomain": true,
+                "url": "http://localhost:7474/db/data/cypher",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic bmVvNGo6YWRtaW4=",
+                    "Cache-Control": "no-cache",
+                    "Postman-Token": "c2b26f6b-a88f-8d15-462e-fee0ffbb5822"
+                },
+                "processData": false,
+                "data": "{\n\"query\" : \"MATCH (n:problem) RETURN n.Name ORDER BY n.Modified_on DESC  skip {skip_count} Limit 10\",\n\"params\" : {\n\t\"skip_count\" :10\n}\n}"
+            }).done();
+            console.log(ProblemCount.responseJSON.data.toString().split(","));
+            TagCount = ProblemCount.responseJSON.data.toString().split(",");
+            for (var i = 0; i < TagCount.length; i++) {
+                $("#filter1").append('<div class="tag-column"><input type="checkbox" id="tag' + TagCount[i] + '"/><label for="tag' + TagCount[i] + '">' + TagCount[i] + '</label></div>')
+            }
 //            $('.chips-initial').material_chip({
-//                data: TagCount_Global
+//                data: TagCount
 //            });
 //            $('.chips-autocomplete').material_chip({
 //
 //                autocompleteOptions: {
-//                    data: TagCount_Global,
+//                    data: TagCount,
 //                    limit: Infinity,
 //                    minLength: 1
 //                }
 //            });
-//            console.log(TagCount_Global);
+
+
+
+            //$('.chips').material_chip();
+            $('.chips-initial').material_chip({
+                data: [{
+                        tag: 'Apple',
+                    }, {
+                        tag: 'Microsoft',
+                    }, {
+                        tag: 'Google',
+                    }],
+            });
+
+            $('.chips-autocomplete').material_chip({
+                autocompleteOptions: {
+                    data: {
+                        'Apple': null,
+                        'Microsoft': null,
+                        'Google': null
+                    },
+                    limit: Infinity,
+                    minLength: 1
+                }
+            });
+
+
+
 //            function filterRelatedTags() {
 //                var settings = {
 //                    "async": true,
