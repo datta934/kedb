@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Kedb </title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link type="text/css" rel="stylesheet" href="css/materialize.min.css"/>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+        <script src="js/materialize.min.js"></script>
+        <script type="text/javascript">
+            var TagCount;
+            var a = 1;
+
+            var test= $.ajax({
+                "async": true,
+                "crossDomain": true,
+                "url": "http://localhost:7474/db/data/cypher",
+                "method": "POST",
+                "headers": {
+                    "Content-Type": "application/json",
+                    "Authorization": "Basic bmVvNGo6YWRtaW4=",
+                    "Cache-Control": "no-cache",
+                    "Postman-Token": "c2b26f6b-a88f-8d15-462e-fee0ffbb5822"
+                },
+                "processData": false,
+                "data": "{\"query\" : \"match (n:TAGS) return n.name as name\"}"
+            }).done(function (response) {
+
+                a = 2;
+                TagCount = response.data.toString().split(",");
+                for (var i = 0; i < TagCount.length; i++) {
+                    $("#filter1").append('<div class="tag-column"><input type="checkbox" id="tag' + TagCount[i] + '"/><label for="tag' + TagCount[i] + '">' + TagCount[i] + '</label></div>')
+                }
+//                console.log(TagCount);
+                return response;
+            });
+            console.log(test);
+            $(document).ready(function () {
+                $('#view-question').modal();
+                $('#new-question').modal();
+                $("#fornew-answermodal").modal();
+                $("#only-newq").modal();
+            });
+        </script>
+        <style>
+            .my-container{
+                width:100%;
+                padding-right: 15px;
+                padding-left: 15px;
+                margin-right: auto;
+                margin-left: auto;
+            }
+            .filter1,.filter2{
+                overflow-y: auto;
+                height: 32vh;
+            }
+            .add-q{
+                float:right;
+            }
+            .filter-heads{
+                font-size: 16px;
+                font-weight: bold;
+                background-color: #4db6ac;
+                padding: 8px;
+                color:#ffffff;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="my-container">
+            <div class="row">
+                <div class="col s3 m3 l3 xl3">
+                    <p class="filter-heads">Filter By Tags</p>
+                    <div class="filter1" id="filter1">     
+                    </div>
+                    <p class="filter-heads">Related Tags</p>
+                    <div class="filter2" id="relatedTagFilter">
+                        <!--                        <div class="tag-column">
+                                                    <input type="checkbox" id="tag1" checked="checked"/>
+                                                    <label for="tag1">Tag 1</label>
+                                                </div>-->
+                    </div>
+                </div>
+                <div class="col s3 m3 l9 xl9">
+                    <h5>Problems and Queries</h5>
+                    <div class="collection">
+                        <a href="#view-question" class="collection-item active modal-trigger">Question 1</a>
+                        <a href="#!" class="collection-item">Question 2</a>
+                        <a href="#!" class="collection-item">Question 3</a>
+                        <a href="#!" class="collection-item">Question 4</a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-question" class="modal modal-fixed-footer">
+                <div class="modal-content">
+                    <h5>Question 1</h5>
+                    <p class="answer">A bunch of text</p>
+                    <p class="answer">A bunch of text</p>
+                    <div id="fornew-answer"></div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#fornew-answermodal" class="modal-action modal-trigger modal-close waves-effect waves-green btn-flat ">Answer</a>
+                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+                </div>
+            </div>
+            <div id="fornew-answermodal" class="modal modal-fixed-footer">
+                <div class="modal-content">
+                    <h5>Answer the question</h5>
+                    <div class="input-field col s12">
+                        <input id="answer" type="text" class="validate">
+                        <label for="answer">Answer</label>
+                    </div>
+                    <div class="input-field col s12">
+                        <h6>Or upload files for answer</h6>
+                    </div>
+                    <div class="input-field col s12">
+                        <div class="file-field">
+                            <div class="btn">
+                                <span>File</span>
+                                <input type="file">
+                            </div>
+                            <div class="file-path-wrapper">
+                                <input class="file-path validate" type="text">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="fornew-answer"></div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#fornew-answer" class="modal-action modal-trigger modal-close waves-effect waves-green btn-flat ">Answer</a>
+                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+                </div>
+            </div>
+            <div id="new-question" class="modal modal-fixed-footer">
+                <div class="modal-content"> 
+                    <h5>Post a question</h5>
+                    <form>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <textarea id="question" class="validate materialize-textarea"></textarea>
+                                <label for="question">Question</label>
+                            </div>
+                            <!--                            <div class="input-field col s12">
+                                                            <label for="tags">Tags</label>
+                                                            <div class="chips chips-autocomplete" id="tags"></div>
+                                                        </div>-->
+                            <div class="input-field col s12">
+                                <textarea id="answer" class="validate materialize-textarea"></textarea>
+                                <label for="answer">Answer</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <h6>Or upload files for answer</h6>
+                            </div>
+                            <div class="input-field col s12">
+                                <div class="file-field">
+                                    <div class="btn">
+                                        <span>File</span>
+                                        <input type="file">
+                                    </div>
+                                    <div class="file-path-wrapper">
+                                        <input class="file-path validate" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat ">Save</a>
+                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+                </div>
+            </div>
+            <div id="only-newq" class="modal modal-fixed-footer">
+                <div class="modal-content"> 
+                    <h5>Post a question</h5>
+                    <form>
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <textarea id="question" class="validate materialize-textarea"></textarea>
+                                <label for="question">Question</label>
+                            </div>
+                            <div class="input-field col s12">
+                                <label for="tags-onlyq">Tags</label>
+                                <div class="chips chips-autocomplete" id="tags-onlyq"></div>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="modal-action modal-close waves-effect waves-green btn-flat ">Post</a>
+                    <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
+                </div>
+            </div>
+            <div class="fixed-action-btn horizontal click-to-toggle">
+                <a class="btn-floating btn-large teal">
+                    <i class="material-icons">menu</i>
+                </a>
+                <ul>
+                    <li><a class="btn-floating btn-medium btn waves-effect waves-light modal-trigger teal lighten-2 add-q tooltipped" data-position="top" data-delay="50" data-tooltip="Add New Question" href="#only-newq"><i class="material-icons">add</i></a></li>
+                    <li><a class="btn-floating btn-medium btn waves-effect waves-light modal-trigger teal lighten-2 add-q tooltipped" data-position="top" data-delay="50" data-tooltip="Add New Question with answer"  href="#new-question"><i class="material-icons">insert_chart</i></a></li>
+                </ul>
+            </div>
+
+
+        </div>
+        <script>
+//            $('.chips-initial').material_chip({
+//                data: TagCount_Global
+//            });
+//            $('.chips-autocomplete').material_chip({
+//
+//                autocompleteOptions: {
+//                    data: TagCount_Global,
+//                    limit: Infinity,
+//                    minLength: 1
+//                }
+//            });
+//            console.log(TagCount_Global);
+//            function filterRelatedTags() {
+//                var settings = {
+//                    "async": true,
+//                    "crossDomain": true,
+//                    "url": "http://localhost:7474/db/data/cypher",
+//                    "method": "POST",
+//                    "headers": {
+//                        "Content-Type": "application/json",
+//                        "Authorization": "Basic bmVvNGo6YWRtaW4=",
+//                        "Cache-Control": "no-cache",
+//                        "Postman-Token": "c2b26f6b-a88f-8d15-462e-fee0ffbb5822"
+//                    },
+//                    "processData": false,
+//                    "data": "{\"query\" : \"match (n:TAGS) return n.name\"}"
+//                }
+//
+//                $.ajax(settings).done(function (response) {
+//                    var TagCount = response.data;
+//                    for (var i = 0; i < TagCount.length; i++) {
+//                        $("#relatedTagFilter").append('<div class="tag-column"><input type="checkbox" id="tag' + TagCount[i][0] + '"/><label for="tag' + TagCount[i][0] + '">' + TagCount[i][0] + '</label></div>')
+//                    }
+//                    console.log(TagCount);
+//                });
+//            }
+
+        </script>
+
+    </body>
+</html>
