@@ -63,11 +63,12 @@ and open the template in the editor.
                 </div>
                 <div class="col s3 m3 l9 xl9">
                     <h5>Problems and Queries</h5>
-                    <div class="collection">
+                    <div class="collection" id="questions">
+<!--                        
                         <a href="#view-question" class="collection-item active modal-trigger">Question 1</a>
-                        <a href="#!" class="collection-item">Question 2</a>
-                        <a href="#!" class="collection-item">Question 3</a>
-                        <a href="#!" class="collection-item">Question 4</a>
+                        <a href="#!" class="collection-item">Question 2</a>-->
+
+                        <!--being added dynamically from JS-->
                     </div>
                 </div>
             </div>
@@ -84,10 +85,10 @@ and open the template in the editor.
                     <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Close</a>
                 </div>
             </div>
-            
-            
-            
-            
+
+
+
+
             <div id="fornew-answermodal" class="modal modal-fixed-footer">
                 <div class="modal-content">
                     <h5>Answer the question</h5>
@@ -209,6 +210,7 @@ and open the template in the editor.
             for (var i = 0; i < TagCount.length; i++) {
                 $("#filter1").append('<div class="tag-column"><input type="checkbox" id="tag' + TagCount[i] + '"/><label for="tag' + TagCount[i] + '">' + TagCount[i] + '</label></div>')
             }
+            console.log("Executed")
             var ProblemCount = $.ajax({
                 "async": false,
                 "crossDomain": true,
@@ -221,12 +223,14 @@ and open the template in the editor.
                     "Postman-Token": "c2b26f6b-a88f-8d15-462e-fee0ffbb5822"
                 },
                 "processData": false,
-                "data": "{\n\"query\" : \"MATCH (n:problem) RETURN n.Name ORDER BY n.Modified_on DESC  skip {skip_count} Limit 10\",\n\"params\" : {\n\t\"skip_count\" :10\n}\n}"
+                "data": "{\"query\" : \"match (n:PROBLEM) return n.error\"}"
             }).done();
             console.log(ProblemCount.responseJSON.data.toString().split(","));
+            console.log("Res");
             TagCount = ProblemCount.responseJSON.data.toString().split(",");
             for (var i = 0; i < TagCount.length; i++) {
-                $("#filter1").append('<div class="tag-column"><input type="checkbox" id="tag' + TagCount[i] + '"/><label for="tag' + TagCount[i] + '">' + TagCount[i] + '</label></div>')
+                $("#questions").append('<a href="#!" class="collection-item">' + TagCount[i] + '</a>');
+                console.log('<div class="tag-column"><input type="checkbox" id="tag' + TagCount[i] + '"/><label for="tag' + TagCount[i] + '">' + TagCount[i] + '</label></div>');
             }
 //            $('.chips-initial').material_chip({
 //                data: TagCount
